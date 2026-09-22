@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
+      /*decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment(-0.6, -1),
           end: Alignment(0.8, 1),
@@ -40,7 +40,7 @@ class HomeScreen extends StatelessWidget {
           bottomLeft: .circular(30),
           bottomRight: .circular(30),
         ),
-      ),
+      ),*/
       child: SafeArea(
         child: Stack(
           children: [
@@ -50,24 +50,26 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: .start,
                 spacing: 40,
                 children: [
-                  SvgPicture.asset(AppIcons.icMenu, width: 28, height: 16, colorFilter: .mode(AppColors.whiteColor, .srcIn),),
+                  //icMenu
                   const SizedBox(height: 40,),
                   Column(
                     crossAxisAlignment: .start,
                     spacing: 8,
                     children: [
-                      Text('${StringConst.helloPrefix}${AppData.userName}', style: AppTextStyles.greeting,),
+                      //${StringConst.helloPrefix}${AppData.userName}, style: greeting
                       SizedBox(
                         width: 221,
-                        child: Text(StringConst.trackBelongings, style: AppTextStyles.heroTitle,),
+                        child: const SizedBox()
+
+                        // Text(StringConst.trackBelongings, style: AppTextStyles.heroTitle,),
                       ),
                     ],
                   ),
                   Column(
                     spacing: 18,
                     children: [
-                      _buildSearchField(context),
-                      Center(child: _buildTrackButton(context),),
+                      // _buildSearchField(context),
+                      // Center(child: _buildTrackButton(context),),
                     ],
                   ),
                 ],
@@ -76,7 +78,10 @@ class HomeScreen extends StatelessWidget {
             Positioned(
                 top: 0,
                 right: -110,
-                child: Image.asset(AppIcons.searchIllustration, height: 260,))
+                child: const SizedBox()
+
+                // Image.asset(AppIcons.searchIllustration, height: 260,),
+            )
           ],
         ),
       ),
@@ -147,14 +152,14 @@ class HomeScreen extends StatelessWidget {
         crossAxisAlignment: .start,
         spacing: 26,
         children: [
-          Text(StringConst.trackingHistory, style: AppTextStyles.sectionTitle,),
+          //trackingHistory, sectionTitle
           Column(
             spacing: 28,
             children: [
               for (var i = 0; i < AppData.trackingHistory.length; i++) ...[
                 _buildHistoryTile(context,  AppData.trackingHistory[i]),
-                if (i < AppData.trackingHistory.length - 1)
-                  Divider(height: 1, thickness: 1, color: AppColors.dividerColor,),
+        /*        if (i < AppData.trackingHistory.length - 1)
+                  Divider(height: 1, thickness: 1, color: AppColors.dividerColor,),*/
               ],
             ],
           ),
@@ -174,22 +179,24 @@ class HomeScreen extends StatelessWidget {
               spacing: 18,
               children: [
                 ClipOval(
-                  child: Image.asset(item.logoPath, width: 46, height: 46, fit: .cover,),
+                  child: const SizedBox()
+
+                  // Image.asset(item.logoPath, width: 46, height: 46, fit: .cover,),
                 ),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: .start,
                     spacing: 2,
                     children: [
-                      Text(item.companyName, style: AppTextStyles.listTitle, maxLines: 1, overflow: .ellipsis,),
-                      Text(item.deliveredDateLabel, style: AppTextStyles.listSubtitle, maxLines: 1, overflow: .ellipsis,),
+                      //item.companyName, listTitle,
+                      //item.deliveredDateLabel, listSubtitle,
                     ],
                   ),
                 ),
               ],
             ),
           ),
-          Icon(Icons.navigate_next_rounded, size: 25,)
+          // Icon(Icons.navigate_next_rounded, size: 25,)
         ],
       ),
     );

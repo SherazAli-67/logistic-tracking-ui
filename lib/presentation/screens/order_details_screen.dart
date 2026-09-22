@@ -20,19 +20,30 @@ class OrderDetailsScreen extends StatelessWidget {
       backgroundColor: AppColors.whiteColor,
       body: Stack(
         children: [
-          Positioned.fill(child: Image.asset(order.mapAssetPath, fit: .cover,),),
-          Positioned.fill(child: _buildMapOverlays(context, order),),
+          Positioned.fill(
+            child: const SizedBox()
+
+            // Image.asset(order.mapAssetPath, fit: .cover,),
+          ),
+          Positioned.fill(
+            child: const SizedBox()
+
+            // _buildMapOverlays(context, order),
+          ),
           Positioned(
             top: 0,
             left: 0,
             right: 0,
-            child: _buildAppBar(context, order),
+            child: const SizedBox()
+            // _buildAppBar(context, order),
           ),
           Positioned(
             left: 0,
             right: 0,
             bottom: 0,
-            child: _buildBottomPanel(context, order),
+            child: const SizedBox()
+
+            // _buildBottomPanel(context, order),
           ),
         ],
       ),
