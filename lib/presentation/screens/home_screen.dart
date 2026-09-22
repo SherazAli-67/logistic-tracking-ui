@@ -1,34 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:logistic_tracking_ui/constants/string_const.dart';
 import 'package:logistic_tracking_ui/core/app_colors.dart';
 import 'package:logistic_tracking_ui/core/app_data.dart';
 import 'package:logistic_tracking_ui/core/app_icons.dart';
 import 'package:logistic_tracking_ui/core/app_textstyles.dart';
 import 'package:logistic_tracking_ui/core/models/tracking_history_item.dart';
-import 'package:logistic_tracking_ui/routing/router.dart';
+import 'package:logistic_tracking_ui/providers/home_provider.dart';
+import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final _orderController = TextEditingController();
-
-  @override
-  void dispose() {
-    _orderController.dispose();
-    super.dispose();
-  }
-
-  void _openOrder([String? orderId]) {
-    final id = (orderId == null || orderId.isEmpty) ? AppData.sampleOrder.orderId : orderId;
-    context.push(NamedRoutes.order.pathFor(id));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +19,15 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildHeader(),
-            _buildTrackingHistory(),
+            _buildHeader(context),
+            _buildTrackingHistory(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Container(
       width: double.infinity,
       // padding: .only(left: 37, right: 37, top: 50, bottom: 40),
@@ -85,8 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Column(
                     spacing: 18,
                     children: [
-                      _buildSearchField(),
-                      Center(child: _buildTrackButton(),),
+                      _buildSearchField(context),
+                      Center(child: _buildTrackButton(context),),
                     ],
                   ),
                 ],
@@ -102,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSearchField() {
+  Widget _buildSearchField(BuildContext context, ) {
     return Container(
       height: 50,
       padding: .symmetric(horizontal: 18),
@@ -117,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
           SvgPicture.asset(AppIcons.icSearch, colorFilter: .mode(AppColors.iconGreyColor, .srcIn),),
           Expanded(
             child: TextField(
-              controller: _orderController,
+              controller: context.read<HomeProvider>().orderNumController,
               keyboardType: .number,
               maxLength: 10,
               style: AppTextStyles.listTitle,
@@ -137,9 +119,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildTrackButton() {
+  Widget _buildTrackButton(BuildContext context) {
     return GestureDetector(
-      onTap: () => _openOrder(_orderController.text.trim()),
+      onTap: () => context.read<HomeProvider>().onOrderItemTap(context, ),
       child: Container(
         padding: .symmetric(horizontal: 34, vertical: 11),
         decoration: BoxDecoration(
@@ -159,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildTrackingHistory() {
+  Widget _buildTrackingHistory(BuildContext context) {
     return Padding(
       padding: .symmetric(horizontal: 24, vertical: 36),
       child: Column(
@@ -171,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
             spacing: 28,
             children: [
               for (var i = 0; i < AppData.trackingHistory.length; i++) ...[
-                _buildHistoryTile(AppData.trackingHistory[i]),
+                _buildHistoryTile(context,  AppData.trackingHistory[i]),
                 if (i < AppData.trackingHistory.length - 1)
                   Divider(height: 1, thickness: 1, color: AppColors.dividerColor,),
               ],
@@ -182,9 +164,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHistoryTile(TrackingHistoryItem item) {
+  Widget _buildHistoryTile(BuildContext context, TrackingHistoryItem item) {
     return GestureDetector(
-      onTap: () => _openOrder(item.orderId),
+      onTap: () => context.read<HomeProvider>().onOrderItemTap(context, orderID: item.orderId),
       behavior: .opaque,
       child: Row(
         children: [

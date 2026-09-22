@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logistic_tracking_ui/presentation/screens/home_screen.dart';
 import 'package:logistic_tracking_ui/presentation/screens/welcome_screen.dart';
+import 'package:logistic_tracking_ui/providers/home_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../presentation/screens/main_menu_page.dart';
 
@@ -18,7 +20,7 @@ GoRouter router = GoRouter(
           GoRoute(path: NamedRoutes.search.routeName, builder: (_, state) => Center(child: Text("Search"),)),
         ]),
         StatefulShellBranch(routes: [
-          GoRoute(path: NamedRoutes.home.routeName, builder: (_, state) => HomeScreen()),
+          GoRoute(path: NamedRoutes.home.routeName, builder: (_, state) => ChangeNotifierProvider(create: (_)=> HomeProvider(), child:  HomeScreen(),)),
         ]),
         StatefulShellBranch(routes: [
           GoRoute(path: NamedRoutes.cart.routeName, builder: (_, state) => Center(child: Text("Cart"),)),
