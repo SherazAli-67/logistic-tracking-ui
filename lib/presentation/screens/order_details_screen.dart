@@ -21,12 +21,12 @@ class OrderDetailsScreen extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: const SizedBox()
+            child: Image.asset(order.mapAssetPath, fit: .cover,)
 
             // Image.asset(order.mapAssetPath, fit: .cover,),
           ),
           Positioned.fill(
-            child: const SizedBox()
+            child: _buildMapOverlays(context, order)
 
             // _buildMapOverlays(context, order),
           ),
@@ -34,14 +34,14 @@ class OrderDetailsScreen extends StatelessWidget {
             top: 0,
             left: 0,
             right: 0,
-            child: const SizedBox()
+            child: _buildAppBar(context, order)
             // _buildAppBar(context, order),
           ),
           Positioned(
             left: 0,
             right: 0,
             bottom: 0,
-            child: const SizedBox()
+            child: _buildBottomPanel(context, order)
 
             // _buildBottomPanel(context, order),
           ),
