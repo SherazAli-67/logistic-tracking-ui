@@ -35,8 +35,23 @@ GoRouter router = GoRouter(
     ),
     GoRoute(
       path: NamedRoutes.order.routeName,
-      builder: (_, state) => OrderDetailsScreen(
-        orderId: state.pathParameters['orderId'] ?? AppData.sampleOrder.orderId,
+      pageBuilder: (_, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: OrderDetailsScreen(
+          orderId: state.pathParameters['orderId'] ?? AppData.sampleOrder.orderId,
+        ),
+        transitionDuration: const Duration(milliseconds: 350),
+        reverseTransitionDuration: const Duration(milliseconds: 280),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic,);
+          return FadeTransition(
+            opacity: curved,
+            child: SlideTransition(
+              position: Tween<Offset>(begin: Offset(0, 0.08), end: Offset.zero).animate(curved),
+              child: child,
+            ),
+          );
+        },
       ),
     ),
   ],

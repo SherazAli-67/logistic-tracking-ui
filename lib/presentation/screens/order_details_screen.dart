@@ -7,43 +7,74 @@ import 'package:logistic_tracking_ui/core/app_data.dart';
 import 'package:logistic_tracking_ui/core/app_icons.dart';
 import 'package:logistic_tracking_ui/core/app_textstyles.dart';
 import 'package:logistic_tracking_ui/core/models/order_details.dart';
+import 'package:logistic_tracking_ui/presentation/widgets/fade_slide_in.dart';
 
-class OrderDetailsScreen extends StatelessWidget {
+class OrderDetailsScreen extends StatefulWidget {
   const OrderDetailsScreen({super.key, required this.orderId});
 
   final String orderId;
 
   @override
+  State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
+}
+
+class _OrderDetailsScreenState extends State<OrderDetailsScreen> with TickerProviderStateMixin {
+  late final AnimationController _entrance;
+  late final AnimationController _pulse;
+  late final Animation<double> _routeProgress;
+
+  @override
+  void initState() {
+    super.initState();
+    _entrance = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000),)..forward();
+    _pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600),)..repeat(reverse: true);
+    _routeProgress = CurvedAnimation(parent: _entrance, curve: Interval(0.15, 0.55, curve: Curves.easeInOut),);
+  }
+
+  @override
+  void dispose() {
+    _entrance.dispose();
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final order = AppData.orderById(orderId);
+    final order = AppData.orderById(widget.orderId);
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(order.mapAssetPath, fit: .cover,)
-
-            // Image.asset(order.mapAssetPath, fit: .cover,),
+            child: FadeTransition(
+              opacity: CurvedAnimation(parent: _entrance, curve: Interval(0.00, 0.30, curve: Curves.easeOut),),
+              child: Image.asset(order.mapAssetPath, fit: .cover,),
+            ),
           ),
-          Positioned.fill(
-            child: _buildMapOverlays(context, order)
-
-            // _buildMapOverlays(context, order),
-          ),
+          Positioned.fill(child: _buildMapOverlays(context, order),),
           Positioned(
             top: 0,
             left: 0,
             right: 0,
-            child: _buildAppBar(context, order)
-            // _buildAppBar(context, order),
+            child: FadeSlideIn(
+              animation: _entrance,
+              begin: 0.20,
+              end: 0.45,
+              offset: Offset.zero,
+              child: _buildAppBar(context, order),
+            ),
           ),
           Positioned(
             left: 0,
             right: 0,
             bottom: 0,
-            child: _buildBottomPanel(context, order)
-
-            // _buildBottomPanel(context, order),
+            child: FadeSlideIn(
+              animation: _entrance,
+              begin: 0.40,
+              end: 0.75,
+              offset: Offset(0, 0.25),
+              child: _buildBottomPanel(context, order),
+            ),
           ),
         ],
       ),
@@ -88,36 +119,84 @@ class OrderDetailsScreen extends StatelessWidget {
               top: h * 0.12,
               width: w * 0.62,
               height: h * 0.38,
-              child: CustomPaint(painter: _RoutePainter(),),
+              child: AnimatedBuilder(
+                animation: _routeProgress,
+                builder: (context, _) => CustomPaint(painter: _RoutePainter(progress: _routeProgress.value),),
+              ),
             ),
             Positioned(
               left: w * 0.10,
               top: h * 0.095,
-              child: _buildDestinationAddressChip(order.origin),
+              child: _buildScaleFade(
+                begin: 0.35,
+                end: 0.55,
+                child: _buildDestinationAddressChip(order.origin),
+              ),
             ),
             Positioned(
               left: w * 0.14,
               top: h * 0.132,
-              child: SvgPicture.asset(AppIcons.icDestinationPin)
+              child: _buildScaleFade(
+                begin: 0.35,
+                end: 0.55,
+                child: _buildPulsingPin(SvgPicture.asset(AppIcons.icDestinationPin),),
+              ),
             ),
             Positioned(
               left: w * 0.625,
               top: h * 0.35,
-              child: SvgPicture.asset(AppIcons.icCourierPin)
+              child: _buildScaleFade(
+                begin: 0.45,
+                end: 0.65,
+                child: SvgPicture.asset(AppIcons.icCourierPin),
+              ),
             ),
             Positioned(
               left: w * 0.685,
               top: h * 0.465,
-              child: SvgPicture.asset(AppIcons.icOriginDot)
+              child: _buildScaleFade(
+                begin: 0.55,
+                end: 0.75,
+                child: _buildPulsingPin(SvgPicture.asset(AppIcons.icOriginDot),),
+              ),
             ),
             Positioned(
               left: w * 0.62,
               top: h * 0.49,
-              child: _buildDestinationAddressChip(order.destination),
+              child: _buildScaleFade(
+                begin: 0.55,
+                end: 0.75,
+                child: _buildDestinationAddressChip(order.destination),
+              ),
             ),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildScaleFade({required double begin, required double end, required Widget child}) {
+    final curved = CurvedAnimation(parent: _entrance, curve: Interval(begin, end, curve: Curves.easeOutBack),);
+    return FadeTransition(
+      opacity: curved,
+      child: ScaleTransition(
+        scale: Tween<double>(begin: 0.6, end: 1).animate(curved),
+        child: child,
+      ),
+    );
+  }
+
+  Widget _buildPulsingPin(Widget child) {
+    return AnimatedBuilder(
+      animation: _pulse,
+      builder: (context, child) {
+        final t = Curves.easeInOut.transform(_pulse.value);
+        return Opacity(
+          opacity: 0.75 + 0.25 * t,
+          child: Transform.scale(scale: 0.94 + 0.06 * t, child: child,),
+        );
+      },
+      child: child,
     );
   }
 
@@ -149,7 +228,6 @@ class OrderDetailsScreen extends StatelessWidget {
           end: Alignment(0.6, 1),
           colors: [AppColors.navyDark, AppColors.navyMid],
         ),
-
         borderRadius: .vertical(top: .circular(30)),
         boxShadow: [
           BoxShadow(
@@ -168,7 +246,7 @@ class OrderDetailsScreen extends StatelessWidget {
             padding: .fromLTRB(36, 28, 36, bottomInset + 24),
             decoration: BoxDecoration(
               color: AppColors.whiteColor,
-              borderRadius: .only(topLeft: .circular(30), topRight: .circular(30))
+              borderRadius: .only(topLeft: .circular(30), topRight: .circular(30)),
             ),
             child: Column(
               crossAxisAlignment: .start,
@@ -179,7 +257,7 @@ class OrderDetailsScreen extends StatelessWidget {
                 _buildShipperRow(order),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -227,10 +305,16 @@ class OrderDetailsScreen extends StatelessWidget {
       spacing: 2,
       children: [
         for (var i = 0; i < 5; i++)
-          Icon(
-            Icons.star_rounded,
-            size: 14,
-            color: i < rating ? AppColors.starYellow : AppColors.iconGreyColor,
+          FadeTransition(
+            opacity: CurvedAnimation(
+              parent: _entrance,
+              curve: Interval((0.65 + i * 0.05).clamp(0.0, 0.95), (0.75 + i * 0.05).clamp(0.0, 1.0), curve: Curves.easeOut,),
+            ),
+            child: Icon(
+              Icons.star_rounded,
+              size: 14,
+              color: i < rating ? AppColors.starYellow : AppColors.iconGreyColor,
+            ),
           ),
       ],
     );
@@ -320,8 +404,13 @@ class OrderDetailsScreen extends StatelessWidget {
 }
 
 class _RoutePainter extends CustomPainter {
+  const _RoutePainter({required this.progress});
+
+  final double progress;
+
   @override
   void paint(Canvas canvas, Size size) {
+    if (progress <= 0) return;
     final paint = Paint()
       ..color = const Color(0xFF8B6B2E)
       ..strokeWidth = 2.4
@@ -338,9 +427,10 @@ class _RoutePainter extends CustomPainter {
         size.height * 0.92,
       );
     for (final metric in path.computeMetrics()) {
+      final visibleLength = metric.length * progress.clamp(0.0, 1.0);
       var distance = 0.0;
-      while (distance < metric.length) {
-        final end = (distance + 7).clamp(0.0, metric.length);
+      while (distance < visibleLength) {
+        final end = (distance + 7).clamp(0.0, visibleLength);
         canvas.drawPath(metric.extractPath(distance, end), paint);
         distance += 13;
       }
@@ -348,7 +438,7 @@ class _RoutePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _RoutePainter oldDelegate) => oldDelegate.progress != progress;
 }
 
 class _DashedLinePainter extends CustomPainter {
