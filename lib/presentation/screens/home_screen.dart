@@ -30,7 +30,6 @@ class HomeScreen extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Container(
       width: double.infinity,
-      // padding: .only(left: 37, right: 37, top: 50, bottom: 40),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment(-0.6, -1),

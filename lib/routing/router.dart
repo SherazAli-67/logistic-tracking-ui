@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logistic_tracking_ui/core/app_data.dart';
 import 'package:logistic_tracking_ui/presentation/screens/home_screen.dart';
+import 'package:logistic_tracking_ui/presentation/screens/order_details_screen.dart';
 import 'package:logistic_tracking_ui/presentation/screens/welcome_screen.dart';
 import 'package:logistic_tracking_ui/providers/home_provider.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +25,7 @@ GoRouter router = GoRouter(
           GoRoute(path: NamedRoutes.home.routeName, builder: (_, state) => ChangeNotifierProvider(create: (_)=> HomeProvider(), child:  HomeScreen(),)),
         ]),
         StatefulShellBranch(routes: [
-          GoRoute(path: NamedRoutes.cart.routeName, builder: (_, state) => Center(child: Text("Cart"),)),
+          GoRoute(path: NamedRoutes.calendar.routeName, builder: (_, state) => Center(child: Text("Calendar"),)),
         ]),
         StatefulShellBranch(routes: [
           GoRoute(path: NamedRoutes.notification.routeName, builder: (_, state) => Center(child: Text("Notifications"),)),
@@ -33,8 +35,8 @@ GoRouter router = GoRouter(
     ),
     GoRoute(
       path: NamedRoutes.order.routeName,
-      builder: (_, state) => Scaffold(
-        body: Center(child: Text('Order #${state.pathParameters['orderId'] ?? ''}'),),
+      builder: (_, state) => OrderDetailsScreen(
+        orderId: state.pathParameters['orderId'] ?? AppData.sampleOrder.orderId,
       ),
     ),
   ],

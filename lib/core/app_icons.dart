@@ -24,6 +24,8 @@ class AppIcons {
   static const icOriginDot = '${_iconsPath}ic_origin_dot.svg';
   static const icDestDot = '${_iconsPath}ic_dest_dot.svg';
   static const icTimelineLine = '${_iconsPath}ic_timeline_line.svg';
+  static const icOriginPin = '${_iconsPath}is_origin_pin.svg';
+  static const icDestinationPin = '${_iconsPath}ic_destination_pin.svg';
 
   static const pkartLogo = '${_imagesPath}pkart_logo.png';
   static const pkartCourierLogo = '${_imagesPath}pkart_courier_logo.png';
