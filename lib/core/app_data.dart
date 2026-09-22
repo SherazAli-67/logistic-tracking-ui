@@ -3,7 +3,7 @@ import 'package:logistic_tracking_ui/core/models/order_details.dart';
 import 'package:logistic_tracking_ui/core/models/tracking_history_item.dart';
 
 class AppData {
-  static const userName = 'Abhishek';
+  static const userName = 'Sheraz';
 
   static const trackingHistory = <TrackingHistoryItem>[
     TrackingHistoryItem(
